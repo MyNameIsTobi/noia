@@ -1,0 +1,12 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="noia.Views.HomeView">
+	<Grid>
+		<TextBlock Text="Home"
+				   FontSize="24"
+				   HorizontalAlignment="Center"
+				   VerticalAlignment="Top"
+				   Margin="0,10,0,0"/>
+		<!-- Add more settings UI elements here -->
+	</Grid>
+</UserControl>

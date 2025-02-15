@@ -1,0 +1,61 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:material="clr-namespace:Material.Icons.Avalonia.Controls;assembly=Material.Icons.Avalonia"
+        x:Class="noia.MainWindow"
+		TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent"
+		ExtendClientAreaToDecorationsHint="True"
+        Title="noia" Width="600" Height="400">
+	<SplitView IsPaneOpen="False"
+			   PaneBackground="Transparent"
+			   CornerRadius="30"
+               DisplayMode="CompactInline"
+               CompactPaneLength="70"
+               PanePlacement="Left">
+		<SplitView.Pane>
+			<Grid RowDefinitions="*,Auto">
+				<StackPanel>
+					<Button Margin="5"
+							HorizontalContentAlignment="Center"
+							Background="Transparent"
+							Width="60"
+							Height="50"
+							Click="HomeButton_Click">
+						<StackPanel HorizontalAlignment="Center">
+							<PathIcon Data="{DynamicResource home_regular}" Width="24" Height="24"/>
+							<TextBlock Text="Home" FontSize="12" HorizontalAlignment="Center"/>
+						</StackPanel>
+					</Button>
+					<Button Margin="5"
+							HorizontalContentAlignment="Center"
+							Background="Transparent"
+							Width="60"
+							Height="50"
+							Click="SkillsButton_Click">
+						<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+							<PathIcon Data="{DynamicResource book_star_regular}" Width="24" Height="24"/>
+							<TextBlock Text="Skills" FontSize="12" HorizontalAlignment="Center"/>
+						</StackPanel>
+					</Button>
+				</StackPanel>
+				<Button Margin="5" 
+						HorizontalContentAlignment="Center" 
+						VerticalAlignment="Bottom" 
+						Background="Transparent" 
+						Width="60"
+						Height="50" 
+						Click="SettingsButton_Click">
+					<StackPanel HorizontalAlignment="Center" VerticalAlignment="Top">
+						<PathIcon Data="{DynamicResource settings_regular}" Width="24" Height="24"/>
+						<TextBlock Text="Settings" FontSize="12" HorizontalAlignment="Center"/>
+					</StackPanel>
+				</Button>
+			</Grid>
+		</SplitView.Pane>
+		<SplitView.Content>
+			<DockPanel>
+				<ContentControl x:Name="MainContent" DockPanel.Dock="Top"/>
+			</DockPanel>
+		</SplitView.Content>
+	</SplitView>
+</Window>
