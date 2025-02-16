@@ -5,17 +5,19 @@
 		TransparencyLevelHint="AcrylicBlur"
         Background="Transparent"
 		ExtendClientAreaToDecorationsHint="True"
-        Title="noia" Width="600" Height="400">
-	<SplitView IsPaneOpen="False"
-			   PaneBackground="Transparent"
-			   CornerRadius="30"
-               DisplayMode="CompactInline"
-               CompactPaneLength="70"
-               PanePlacement="Left">
+        Title="noia" Width="800" Height="500">
+	<SplitView	Margin="0,32,0,0"
+				IsPaneOpen="False"
+				PaneBackground="Transparent"
+				CornerRadius="30"
+				DisplayMode="CompactInline"
+				CompactPaneLength="70"
+				PanePlacement="Left">
 		<SplitView.Pane>
 			<Grid RowDefinitions="*,Auto">
 				<StackPanel>
-					<Button Margin="5"
+					<Button x:Name="HomeButton"
+							Margin="5"
 							HorizontalContentAlignment="Center"
 							Background="Transparent"
 							Width="60"
@@ -26,7 +28,8 @@
 							<TextBlock Text="Home" FontSize="12" HorizontalAlignment="Center"/>
 						</StackPanel>
 					</Button>
-					<Button Margin="5"
+					<Button x:Name="SkillsButton"
+							Margin="5"
 							HorizontalContentAlignment="Center"
 							Background="Transparent"
 							Width="60"
@@ -38,7 +41,8 @@
 						</StackPanel>
 					</Button>
 				</StackPanel>
-				<Button Margin="5" 
+				<Button x:Name="SettingsButton"
+						Margin="5" 
 						HorizontalContentAlignment="Center" 
 						VerticalAlignment="Bottom" 
 						Background="Transparent" 
