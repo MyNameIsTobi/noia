@@ -8,9 +8,9 @@ namespace noia
 {
     public class AppSettings
     {
-        public int WindowX { get; set; } = 100;  // default X position
-        public int WindowY { get; set; } = 100;  // default Y position
-
-        // Add other settings as needed (e.g., volume, theme, etc.)
+        public int WindowX { get; set; } = 100;
+        public int WindowY { get; set; } = 100;
+        public bool StartAtLastPosition { get; set; } = true;
+        public bool AlwaysOnTop { get; set; } = false;
     }
 }

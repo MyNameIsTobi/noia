@@ -42,22 +42,23 @@
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto" SharedSizeGroup="LabelGroup"/>
 					<ColumnDefinition Width="*"/>
-					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="40"/>
+					<!-- Fixed width for percentage text -->
 				</Grid.ColumnDefinitions>
 				<TextBlock Text="HP:"
 						   VerticalAlignment="Center"
 						   Margin="0,0,5,0"
 						   Grid.Column="0"/>
 				<ProgressBar x:Name="HPBar"
-							 Foreground="{StaticResource HPGradientBrush}"
+							 Foreground="#C11210"
 							 Grid.Column="1"
 							 Height="20"
-							 Value="75"
-							 HorizontalAlignment="Stretch" />
-				<TextBlock Text="75%"
+							 HorizontalAlignment="Stretch"/>
+				<TextBlock x:Name="HPPercentageText"
 						   VerticalAlignment="Center"
 						   Margin="5,0,0,0"
-						   Grid.Column="2"/>
+						   Grid.Column="2"
+						   HorizontalAlignment="Right"/>
 			</Grid>
 
 			<!-- Mana Row -->
@@ -65,22 +66,23 @@
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto" SharedSizeGroup="LabelGroup"/>
 					<ColumnDefinition Width="*"/>
-					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="40"/>
+					<!-- Fixed width for percentage text -->
 				</Grid.ColumnDefinitions>
 				<TextBlock Text="Mana:"
 						   VerticalAlignment="Center"
 						   Margin="0,0,5,0"
 						   Grid.Column="0"/>
 				<ProgressBar x:Name="ManaBar"
+							 Foreground="#367BE2"
 							 Grid.Column="1"
 							 Height="20"
-							 Value="50"
-							 HorizontalAlignment="Stretch"
-							 Foreground="{StaticResource ManaGradientBrush}"/>
-				<TextBlock Text="50%"
+							 HorizontalAlignment="Stretch"/>
+				<TextBlock x:Name="ManaPercentageText"
 						   VerticalAlignment="Center"
 						   Margin="5,0,0,0"
-						   Grid.Column="2"/>
+						   Grid.Column="2"
+						   HorizontalAlignment="Right"/>
 			</Grid>
 		</Grid>
 

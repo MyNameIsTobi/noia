@@ -1,7 +1,9 @@
+using System;
 using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 using noia.Helpers;
 using noia.ViewModels;
 
@@ -9,6 +11,8 @@ namespace noia.Views
 {
     public partial class HomeView : UserControl
     {
+        private DispatcherTimer _memoryUpdateTimer;
+
         public HomeView()
         {
             InitializeComponent();
@@ -23,6 +27,64 @@ namespace noia.Views
         private void HomeView_AttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
         {
             LoadProcesses();
+            // Start a timer to update memory values every 500 milliseconds.
+            _memoryUpdateTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(250)
+            };
+            _memoryUpdateTimer.Tick += MemoryUpdateTimer_Tick;
+            _memoryUpdateTimer.Start();
+        }
+
+        private void MemoryUpdateTimer_Tick(object? sender, EventArgs e)
+        {
+            // Get the selected process from the ComboBox.
+            var processComboBox = this.FindControl<ComboBox>("ProcessComboBox");
+            if (processComboBox.SelectedItem is ViewModels.ProcessViewModel selectedProcess)
+            {
+                try
+                {
+                    // Use the MemoryReader helper to get all memory values.
+                    var values = MemoryReader.ReadMemoryValues(selectedProcess.Process, "game.dll");
+
+                    // Update the HP ProgressBar and percentage.
+                    var HPBar = this.FindControl<ProgressBar>("HPBar");
+                    var HPPercentageText = this.FindControl<TextBlock>("HPPercentageText");
+
+                    if (values.HPMax > 0)
+                    {
+                        double hpPercent = (double)values.HP / values.HPMax * 100;
+                        HPBar.Value = hpPercent;
+                        HPPercentageText.Text = $"{hpPercent:F0}%";
+                    }
+                    else
+                    {
+                        HPBar.Value = 0;
+                        HPPercentageText.Text = "0%";
+                    }
+
+                    // Update the Mana ProgressBar and percentage.
+                    var ManaBar = this.FindControl<ProgressBar>("ManaBar");
+                    var ManaPercentageText = this.FindControl<TextBlock>("ManaPercentageText");
+
+                    if (values.ManaMax > 0)
+                    {
+                        double manaPercent = (double)values.Mana / values.ManaMax * 100;
+                        ManaBar.Value = manaPercent;
+                        ManaPercentageText.Text = $"{manaPercent:F0}%";
+                    }
+                    else
+                    {
+                        ManaBar.Value = 0;
+                        ManaPercentageText.Text = "0%";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    var processInfoText = this.FindControl<TextBlock>("ProcessInfoText");
+                    processInfoText.Text = $"Error reading memory: {ex.Message}";
+                }
+            }
         }
 
         /// <summary>

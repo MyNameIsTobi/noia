@@ -13,19 +13,39 @@ namespace noia
     {
         public MainWindow()
         {
-            SettingsManager.LoadSettings();
             InitializeComponent();
+#if DEBUG
+            this.AttachDevTools();
+#endif
 
-            this.Opened += (sender, e) =>
+            SettingsManager.LoadSettings();
+
+            // If "Start at last position" is enabled, restore the saved window position.
+            if (SettingsManager.Settings.StartAtLastPosition)
             {
-                this.Position = new PixelPoint(SettingsManager.Settings.WindowX, SettingsManager.Settings.WindowY);
-            };
+                this.Opened += (sender, e) =>
+                {
+                    this.Position = new PixelPoint(SettingsManager.Settings.WindowX, SettingsManager.Settings.WindowY);
+                };
+            }
+            else
+            {
+                // Otherwise, use a default startup location. For example, center the window.
+                this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            }
 
+            // Apply "Always on top" setting.
+            this.Topmost = SettingsManager.Settings.AlwaysOnTop;
+
+            // Save window position on closing, if "Start at last position" is enabled.
             this.Closing += (sender, e) =>
             {
-                var pos = this.Position;
-                SettingsManager.Settings.WindowX = pos.X;
-                SettingsManager.Settings.WindowY = pos.Y;
+                if (SettingsManager.Settings.StartAtLastPosition)
+                {
+                    var pos = this.Position;
+                    SettingsManager.Settings.WindowX = pos.X;
+                    SettingsManager.Settings.WindowY = pos.Y;
+                }
                 SettingsManager.SaveSettings();
             };
 
