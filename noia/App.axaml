@@ -13,4 +13,14 @@
 			</FluentTheme.Palettes>
 		</FluentTheme>
 	</Application.Styles>
+	<Application.Resources>
+			<LinearGradientBrush x:Key="HPGradientBrush" StartPoint="0,0" EndPoint="1,0">
+				<GradientStop Color="Red" Offset="0"/>
+				<GradientStop Color="Yellow" Offset="1"/>
+			</LinearGradientBrush>
+			<LinearGradientBrush x:Key="ManaGradientBrush" StartPoint="0,0" EndPoint="1,0">
+				<GradientStop Color="Blue" Offset="0"/>
+				<GradientStop Color="LightBlue" Offset="1"/>
+			</LinearGradientBrush>
+	</Application.Resources>
 </Application>

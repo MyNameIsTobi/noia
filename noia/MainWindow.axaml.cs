@@ -1,17 +1,16 @@
+using System;
+using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
+using noia.Helpers;
 using noia.Views;
 
 namespace noia
 {
     public partial class MainWindow : Window
     {
-        private Button _homeButton;
-        private Button _skillsButton;
-        private Button _settingsButton;
-
         public MainWindow()
         {
             SettingsManager.LoadSettings();
