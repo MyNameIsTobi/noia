@@ -20,13 +20,13 @@ const TitleBar = ({ selectedProcess, currentPage }) => {
     }
   };
 
-  // Navigiere zur Startseite
-  const navigateToHome = () => {
+  // Navigiere zum Prozess-Scanner
+  const navigateToProcessScanner = () => {
     if (window.electron && window.electron.app) {
-      window.electron.app.navigateTo('home');
+      window.electron.app.navigateTo('process-scanner');
     } else {
       // Fallback für den Fall, dass kein Electron verfügbar ist
-      window.location.hash = 'home';
+      window.location.hash = 'process-scanner';
     }
   };
 
@@ -42,7 +42,7 @@ const TitleBar = ({ selectedProcess, currentPage }) => {
           {showProcessInfo && (
             <>
               {" - "}
-              <span className="process-pid">PID: {selectedProcess.pid}</span>
+              <span className="process-pid" onClick={navigateToProcessScanner}>PID: {selectedProcess.pid}</span>
               <span className="process-cpu">CPU: {formatCpuPercentage(selectedProcess.cpu_usage_percent)}</span>
               <span className="process-memory">Memory: {formatMemory(selectedProcess.memory_usage_kb)}</span>
             </>
@@ -52,9 +52,9 @@ const TitleBar = ({ selectedProcess, currentPage }) => {
               {" - "}
               <span 
                 className="process-pid" 
-                onClick={navigateToHome}
+                onClick={navigateToProcessScanner}
                 style={{ cursor: 'pointer' }}
-                title="Zurück zur Startseite"
+                title="Zurück zum Prozess-Scanner"
               >
                 PID: {selectedProcess.pid}
               </span>

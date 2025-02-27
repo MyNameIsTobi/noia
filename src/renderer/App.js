@@ -1,7 +1,6 @@
 import React, { useState, useEffect, createContext } from 'react';
 import TitleBar from './components/TitleBar';
 import ProcessScanner from './components/ProcessScanner';
-import HomePage from './components/HomePage';
 import Dashboard from './components/Dashboard';
 import './styles/App.css';
 
@@ -9,7 +8,7 @@ import './styles/App.css';
 export const ThemeContext = createContext();
 
 const App = () => {
-  const [currentPage, setCurrentPage] = useState('home');
+  const [currentPage, setCurrentPage] = useState('process-scanner');
   const [theme, setTheme] = useState('dark');
   const [selectedProcess, setSelectedProcess] = useState(null);
   const [isProcessActive, setIsProcessActive] = useState(false);
@@ -21,7 +20,7 @@ const App = () => {
       if (hash) {
         setCurrentPage(hash);
       } else {
-        setCurrentPage('home');
+        setCurrentPage('process-scanner');
       }
     };
 
@@ -95,7 +94,7 @@ const App = () => {
   };
 
   // Handle process update
-  const updateSelectedProcess = (process) => {
+  const handleProcessUpdate = (process) => {
     if (selectedProcess && process.pid === selectedProcess.pid) {
       setSelectedProcess(process);
     }
@@ -105,7 +104,42 @@ const App = () => {
   const handleProcessNotFound = () => {
     if (isProcessActive && !selectedProcess) {
       setIsProcessActive(false);
-      setCurrentPage('home');
+      setCurrentPage('process-scanner');
+    }
+  };
+
+  // Render the appropriate content based on the current page
+  const renderContent = () => {
+    switch (currentPage) {
+      case 'process-scanner':
+        return (
+          <ProcessScanner 
+            onProcessSelect={handleProcessSelect} 
+            onProcessUpdate={handleProcessUpdate}
+            onProcessNotFound={handleProcessNotFound}
+          />
+        );
+      case 'dashboard':
+        return selectedProcess ? (
+          <Dashboard 
+            process={selectedProcess}
+            isActive={isProcessActive}
+          />
+        ) : (
+          <ProcessScanner 
+            onProcessSelect={handleProcessSelect}
+            onProcessUpdate={handleProcessUpdate}
+            onProcessNotFound={handleProcessNotFound}
+          />
+        );
+      default:
+        return (
+          <ProcessScanner 
+            onProcessSelect={handleProcessSelect}
+            onProcessUpdate={handleProcessUpdate}
+            onProcessNotFound={handleProcessNotFound}
+          />
+        );
     }
   };
 
@@ -114,22 +148,7 @@ const App = () => {
       <div className={`app ${theme}`}>
         <TitleBar selectedProcess={selectedProcess} currentPage={currentPage} />
         <div className="app-content">
-          {currentPage === 'home' && (
-            <HomePage />
-          )}
-          {currentPage === 'process-scanner' && (
-            <ProcessScanner 
-              onProcessSelect={handleProcessSelect} 
-              onProcessUpdate={updateSelectedProcess}
-              onProcessNotFound={handleProcessNotFound}
-            />
-          )}
-          {currentPage === 'dashboard' && (
-            <Dashboard 
-              selectedProcess={selectedProcess} 
-              isProcessActive={isProcessActive}
-            />
-          )}
+          {renderContent()}
         </div>
       </div>
     </ThemeContext.Provider>
