@@ -111,8 +111,8 @@ const ProcessScanner = ({ onProcessSelect, onProcessUpdate, onProcessNotFound })
   useEffect(() => {
     fetchProcesses(true); // Beim ersten Aufruf als manuelle Aktualisierung behandeln
     
-    // Aktualisiere die Prozessliste alle 2 Sekunden
-    const intervalId = setInterval(() => fetchProcesses(false), 2000);
+    // Aktualisiere die Prozessliste jede Sekunde
+    const intervalId = setInterval(() => fetchProcesses(false), 1000);
     
     return () => clearInterval(intervalId);
   }, [fetchProcesses]);
