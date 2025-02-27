@@ -8,7 +8,6 @@ contextBridge.exposeInMainWorld('electron', {
     callFunction: (functionName, ...args) => ipcRenderer.invoke('rust-function', functionName, ...args),
     
     // Provide convenience methods for specific Rust functions
-    sampleFunction: (input) => ipcRenderer.invoke('rust-function', 'sampleFunction', input),
     addNumbers: (a, b) => ipcRenderer.invoke('rust-function', 'addNumbers', a, b),
     
     // Process monitoring functions

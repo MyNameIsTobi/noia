@@ -163,20 +163,6 @@ pub fn get_system_info() -> String {
 
 // Keep the original sample and add functions for backward compatibility
 #[napi]
-pub fn sample_function(input: String) -> NapiResult<String> {
-    if input.is_empty() {
-        return Err(Error::new(
-            Status::InvalidArg,
-            "Input string cannot be empty".to_string(),
-        ));
-    }
-    
-    let result = format!("Rust received: '{}' and processed it!", input);
-    
-    Ok(result)
-}
-
-#[napi]
 pub fn add_numbers(a: i32, b: i32) -> i32 {
     a + b
 } 

@@ -8,5 +8,4 @@ export declare function getProcessInfo(pid: number): NapiResult
 export declare function getAllProcesses(): string
 export declare function searchProcesses(namePattern: string): string
 export declare function getSystemInfo(): string
-export declare function sampleFunction(input: string): NapiResult
 export declare function addNumbers(a: number, b: number): number

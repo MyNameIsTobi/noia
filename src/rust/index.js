@@ -310,12 +310,11 @@ if (!nativeBinding) {
   throw new Error(`Failed to load native binding`)
 }
 
-const { findProcess, getProcessInfo, getAllProcesses, searchProcesses, getSystemInfo, sampleFunction, addNumbers } = nativeBinding
+const { findProcess, getProcessInfo, getAllProcesses, searchProcesses, getSystemInfo, addNumbers } = nativeBinding
 
 module.exports.findProcess = findProcess
 module.exports.getProcessInfo = getProcessInfo
 module.exports.getAllProcesses = getAllProcesses
 module.exports.searchProcesses = searchProcesses
 module.exports.getSystemInfo = getSystemInfo
-module.exports.sampleFunction = sampleFunction
 module.exports.addNumbers = addNumbers

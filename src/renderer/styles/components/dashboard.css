@@ -1,1 +1,14 @@
- 
+/* Dashboard Styles */
+.dashboard-page {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: #252525;
+  overflow: auto;
+}
+
+/* Leeres Dashboard wie gewünscht */ 

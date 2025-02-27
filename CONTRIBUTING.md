@@ -12,7 +12,7 @@ Vielen Dank für Ihr Interesse, zur Entwicklung von Noia beizutragen! Dieses Dok
 
 ### Daten & Werte
 
-- **Echte Daten verwenden** – Verwenden Sie niemals Schätzungen oder Annahmen, wenn tatsächliche Daten verfügbar sind
+- **Echte Daten verwenden** – Verwenden Sie niemals Schätzungen oder Annahmen und niemals Mock-Daten oder Prozesse.
 - **Systeminformationen abfragen** – Greifen Sie auf tatsächliche Systemwerte zu (z.B. `navigator.hardwareConcurrency` für CPU-Kerne)
 - **Rohdaten bevorzugen** – Zeigen Sie Daten im Originalformat an und formatieren Sie nur bei Bedarf
 - **Debug-Ausgaben implementieren** – Bei komplexen Berechnungen sollten die Rohwerte für Debugging-Zwecke verfügbar sein

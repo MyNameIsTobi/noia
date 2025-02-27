@@ -11,7 +11,6 @@ try {
   console.error('Failed to load Rust module:', err.message);
   // Provide a minimal implementation if the module isn't built yet
   rustModule = {
-    sampleFunction: (input) => `Mock response (Rust module not built): ${input}`,
     addNumbers: (a, b) => a + b
   };
 }
