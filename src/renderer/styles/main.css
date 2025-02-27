@@ -5,7 +5,6 @@
 /* Import component-specific styles */
 @import './components/title-bar.css';
 @import './components/process-scanner.css';
-@import './components/home.css';
 @import './components/dashboard.css';
 @import './animations.css';
 @import './App.css';
