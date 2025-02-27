@@ -19,8 +19,17 @@ const App = () => {
       const hash = window.location.hash.substring(1);
       if (hash) {
         setCurrentPage(hash);
+        
+        // Prozessauswahl zurücksetzen, wenn wir zum Process-Scanner navigieren
+        if (hash === 'process-scanner') {
+          setSelectedProcess(null);
+          setIsProcessActive(false);
+        }
       } else {
         setCurrentPage('process-scanner');
+        // Auch hier Prozessauswahl zurücksetzen, da wir zum Process-Scanner navigieren
+        setSelectedProcess(null);
+        setIsProcessActive(false);
       }
     };
 
@@ -38,6 +47,12 @@ const App = () => {
       const removeListener = window.electron.app.onNavigate((page) => {
         setCurrentPage(page);
         window.location.hash = page;
+        
+        // Prozessauswahl zurücksetzen, wenn wir zum Process-Scanner navigieren
+        if (page === 'process-scanner') {
+          setSelectedProcess(null);
+          setIsProcessActive(false);
+        }
       });
       
       return () => {
