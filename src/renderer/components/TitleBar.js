@@ -20,8 +20,12 @@ const TitleBar = ({ selectedProcess, currentPage }) => {
     }
   };
 
-  // Navigiere zum Prozess-Scanner
-  const navigateToProcessScanner = () => {
+  // Navigiere zum Prozess-Scanner - mit direkter Ausführung für Dashboard
+  const navigateToProcessScanner = (event) => {
+    console.log("Navigate to process scanner called");
+    // Stoppe Event-Propagation, um sicherzustellen, dass das Event nicht vom übergeordneten Element abgefangen wird
+    event.stopPropagation();
+    
     if (window.electron && window.electron.app) {
       window.electron.app.navigateTo('process-scanner');
     } else {
@@ -41,25 +45,47 @@ const TitleBar = ({ selectedProcess, currentPage }) => {
           Noia
           {showProcessInfo && (
             <>
-              {" - "}
-              <span className="process-pid" onClick={navigateToProcessScanner}>PID: {selectedProcess.pid}</span>
-              <span className="process-cpu">CPU: {formatCpuPercentage(selectedProcess.cpu_usage_percent)}</span>
-              <span className="process-memory">Memory: {formatMemory(selectedProcess.memory_usage_kb)}</span>
+              <span className="app-separator">{" - "}</span>
+              {/* Nicht klickbare PID im Process Scanner */}
+              <div className="process-pid-regular">
+                PID: {selectedProcess.pid}
+              </div>
+              <span className="separator">|</span>
+              <div className="process-cpu">
+                CPU: {formatCpuPercentage(selectedProcess.cpu_usage_percent)}
+              </div>
+              <span className="separator">|</span>
+              <div className="process-memory">
+                MEM: {formatMemory(selectedProcess.memory_usage_kb)}
+              </div>
             </>
           )}
           {showDashboardProcessInfo && (
             <>
-              {" - "}
-              <span 
-                className="process-pid" 
+              <span className="app-separator">{" - "}</span>
+              {/* Klickbare PID im Dashboard mit eindeutiger Klasse und Styling */}
+              <div 
+                className="dashboard-pid-link" 
                 onClick={navigateToProcessScanner}
-                style={{ cursor: 'pointer' }}
+                style={{ 
+                  cursor: 'pointer', 
+                  color: '#38B2AC',
+                  backgroundColor: 'rgba(56, 178, 172, 0.1)',
+                  padding: '2px 8px',
+                  borderRadius: '4px'
+                }}
                 title="Zurück zum Prozess-Scanner"
               >
                 PID: {selectedProcess.pid}
-              </span>
-              <span className="process-cpu">CPU: {formatCpuPercentage(selectedProcess.cpu_usage_percent)}</span>
-              <span className="process-memory">Memory: {formatMemory(selectedProcess.memory_usage_kb)}</span>
+              </div>
+              <span className="separator">|</span>
+              <div className="process-cpu">
+                CPU: {formatCpuPercentage(selectedProcess.cpu_usage_percent)}
+              </div>
+              <span className="separator">|</span>
+              <div className="process-memory">
+                Memory: {formatMemory(selectedProcess.memory_usage_kb)}
+              </div>
             </>
           )}
         </div>

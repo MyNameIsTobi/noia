@@ -9,35 +9,10 @@ try {
   console.log('Rust module loaded successfully with functions:', Object.keys(rustModule));
 } catch (err) {
   console.error('Failed to load Rust module:', err.message);
-  // Provide a mock implementation if the module isn't built yet
+  // Provide a minimal implementation if the module isn't built yet
   rustModule = {
     sampleFunction: (input) => `Mock response (Rust module not built): ${input}`,
-    addNumbers: (a, b) => a + b,
-    findProcess: () => JSON.stringify({ 
-      pid: 1234, 
-      name: "mock-process.exe", 
-      memory_usage_kb: 50000, 
-      cpu_usage_percent: 2.5 
-    }),
-    searchProcesses: () => JSON.stringify([{
-      pid: 1234, 
-      name: "mock-process.exe", 
-      memory_usage_kb: 50000, 
-      cpu_usage_percent: 2.5
-    }]),
-    getProcessInfo: () => JSON.stringify({ 
-      pid: 1234, 
-      name: "mock-process.exe", 
-      memory_usage_kb: 50000, 
-      cpu_usage_percent: 2.5 
-    }),
-    getAllProcesses: () => JSON.stringify([]),
-    getSystemInfo: () => JSON.stringify({ 
-      processes: [], 
-      total_memory: 16000000, 
-      used_memory: 8000000, 
-      total_cpu_usage: 30.0 
-    })
+    addNumbers: (a, b) => a + b
   };
 }
 

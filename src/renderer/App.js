@@ -13,6 +13,32 @@ const App = () => {
   const [selectedProcess, setSelectedProcess] = useState(null);
   const [isProcessActive, setIsProcessActive] = useState(false);
 
+  // Hilfsfunktion für die Navigation zum Prozess-Scanner - auf Komponenten-Level definiert
+  const navigateToProcessScanner = () => {
+    console.log("Navigation zum Prozess-Scanner");
+    
+    // Zum Process-Scanner navigieren (direkt oder über Electron)
+    if (window.electron && window.electron.app) {
+      try {
+        window.electron.app.navigateTo('process-scanner');
+      } catch (e) {
+        console.error('Fehler bei Electron-Navigation:', e);
+        // Fallback bei Electron-Fehler
+        window.location.hash = 'process-scanner';
+        setCurrentPage('process-scanner');
+      }
+    } else {
+      // Manuell navigieren, wenn Electron nicht verfügbar ist
+      window.location.hash = 'process-scanner';
+      setCurrentPage('process-scanner');
+    }
+    
+    // Prozess als inaktiv markieren
+    setIsProcessActive(false);
+    // Prozessauswahl zurücksetzen
+    setSelectedProcess(null);
+  };
+
   // Handle hash-based routing
   useEffect(() => {
     const handleHashChange = () => {
@@ -67,7 +93,15 @@ const App = () => {
     
     const updateProcess = async () => {
       try {
-        if (window.electron && window.electron.rustAPI) {
+        if (window.electron && window.electron.rustAPI && selectedProcess?.pid) {
+          // Prüfe zuerst, ob die PID gültig ist
+          if (!selectedProcess.pid || isNaN(selectedProcess.pid)) {
+            console.warn('Ungültige PID:', selectedProcess.pid);
+            // Direkt navigieren, ohne auf Callbacks zu warten
+            navigateToProcessScanner();
+            return;
+          }
+          
           // Hole aktuelle Prozessinformationen basierend auf der PID
           const response = await window.electron.rustAPI.getProcessInfo(selectedProcess.pid);
           
@@ -76,19 +110,40 @@ const App = () => {
             
             // Falls das Ergebnis ein String ist, parsen
             if (typeof processData === 'string') {
-              processData = JSON.parse(processData);
+              try {
+                processData = JSON.parse(processData);
+                
+                // Zusätzliche Prüfung: Stellen Sie sicher, dass die Prozessdaten gültig sind
+                if (!processData || !processData.pid) {
+                  console.warn('Ungültige Prozessdaten erhalten:', processData);
+                  navigateToProcessScanner();
+                  return;
+                }
+                
+                // Aktualisiere den ausgewählten Prozess
+                setSelectedProcess(processData);
+              } catch (parseError) {
+                console.error('Fehler beim Parsen der Prozessdaten:', parseError);
+                navigateToProcessScanner();
+              }
+            } else {
+              // Aktualisiere den ausgewählten Prozess
+              setSelectedProcess(processData);
             }
-            
-            // Aktualisiere den ausgewählten Prozess
-            setSelectedProcess(processData);
           } else {
-            // Prozess nicht mehr gefunden
+            // Prozess nicht mehr gefunden - kritisch, direktes Umleiten!
             console.warn('Prozess nicht mehr gefunden:', response.error);
-            handleProcessNotFound();
+            navigateToProcessScanner();
           }
+        } else {
+          // Wenn Electron oder rustAPI nicht verfügbar sind, auch zum Scanner zurückkehren
+          console.warn('Electron oder rustAPI nicht verfügbar');
+          navigateToProcessScanner();
         }
       } catch (err) {
         console.error('Fehler beim Aktualisieren der Prozessinformationen:', err);
+        // Bei jedem Fehler zum Prozess-Scanner zurückkehren - direkt
+        navigateToProcessScanner();
       }
     };
     
@@ -99,7 +154,7 @@ const App = () => {
     const intervalId = setInterval(updateProcess, 1000);
     
     return () => clearInterval(intervalId);
-  }, [selectedProcess?.pid]); // Abhängigkeit nur von der PID, nicht vom gesamten Prozessobjekt
+  }, [selectedProcess?.pid]);
 
   // Handle process selection
   const handleProcessSelect = (process) => {
@@ -117,10 +172,9 @@ const App = () => {
 
   // Handle process not found
   const handleProcessNotFound = () => {
-    if (isProcessActive && !selectedProcess) {
-      setIsProcessActive(false);
-      setCurrentPage('process-scanner');
-    }
+    console.log("Prozess nicht mehr gefunden, leite zum Process-Scanner um via handleProcessNotFound");
+    // Verwende die Hilfsfunktion
+    navigateToProcessScanner();
   };
 
   // Render the appropriate content based on the current page

@@ -49,6 +49,17 @@
   text-overflow: ellipsis;
 }
 
+/* App-Name und Trenner */
+.title-text > span:first-of-type {
+  margin-left: 15px; /* Mehr Abstand zwischen App-Namen und PID */
+}
+
+/* App-Separator zwischen Appname und PID */
+.app-separator {
+  margin: 0 10px 0 15px;
+  color: #9e9e9e;
+}
+
 /* Minimale Windows-Steuerelemente */
 .window-controls {
   display: flex;
@@ -81,7 +92,7 @@
   color: white;
 }
 
-/* Prozessinformationen in der Titelleiste */
+/* Prozessinformationen in der Titelleiste mit fixen Breiten */
 .process-info {
   display: flex;
   align-items: center;
@@ -94,9 +105,45 @@
   color: #fff;
 }
 
-.process-pid, .process-cpu, .process-memory {
+.process-pid-regular, .process-cpu, .process-memory {
   color: #9e9e9e;
-  margin-left: 5px;
   /* Stelle sicher, dass die Elemente nicht umbrechen */
   white-space: nowrap;
+  /* Feste Breite für alle Messwerte, damit sich nichts verschiebt */
+  min-width: 70px;
+  display: inline-block;
+  text-align: left;
+}
+
+/* Klickbare Dashboard-PID */
+.dashboard-pid-link {
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  min-width: 70px;
+  display: inline-block;
+  text-align: left;
+  -webkit-app-region: no-drag; /* Wichtig, damit der Klick funktioniert */
+}
+
+.dashboard-pid-link:hover {
+  text-decoration: underline;
+  color: #4FD1C5; /* Heller auf Hover für besseres Feedback */
+  background-color: rgba(56, 178, 172, 0.2) !important;
+}
+
+/* Trenner zwischen den Prozessinformationen */
+.separator {
+  color: #555;
+  margin: 0 12px;  /* Etwas mehr gleichmäßigen Abstand hinzufügen */
+  /* Feste Breite und Position für den Separator */
+  display: inline-block;
+  width: 8px;
+  text-align: center;
+}
+
+/* Einheitliche Abstände für Metriken im Dashboard */
+.dashboard-pid-link, .process-cpu, .process-memory {
+  padding: 0 4px;
+  margin: 0 2px;
 } 
