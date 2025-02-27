@@ -1,0 +1,210 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import component-specific styles */
+@import './components/title-bar.css';
+@import './components/process-scanner.css';
+@import './components/home.css';
+@import './components/dashboard.css';
+@import './animations.css';
+@import './App.css';
+
+/* Base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border-radius: 0 !important;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #1E1E1E;
+  color: #fff;
+  line-height: 1.6;
+  overflow: hidden;
+}
+
+/* Content container and layout */
+.content-container {
+  padding-top: 30px; /* Match titlebar height */
+  width: 100%;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.app-wrapper {
+  padding-top: 0;
+  position: relative;
+}
+
+.app-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Typography */
+h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #e0e0e0;
+}
+
+h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+  color: #e0e0e0;
+}
+
+p {
+  margin-bottom: 1rem;
+  color: #a0a0a0;
+}
+
+/* Card component */
+.card {
+  background: #252526;
+  border: 1px solid #333333;
+  padding: 20px;
+  margin-top: 20px;
+  transition: all 0.3s;
+  border-radius: 0 !important;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+  border-color: #38B2AC;
+}
+
+/* Button styles */
+button {
+  background-color: #38B2AC;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s;
+  margin-top: 10px;
+  border-radius: 0 !important;
+}
+
+button:hover {
+  background-color: #319795;
+  transform: translateY(-2px);
+}
+
+button:disabled {
+  background-color: #2F2F2F;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Form elements */
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #e0e0e0;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  background: #3C3C3C;
+  border: 1px solid #555555;
+  font-size: 16px;
+  color: #fff;
+  border-radius: 0 !important;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #38B2AC;
+  box-shadow: 0 0 0 2px rgba(56, 178, 172, 0.2);
+}
+
+/* Results display */
+.result-container {
+  margin-top: 20px;
+  padding: 15px;
+  background: #252526;
+  border-left: 4px solid #38B2AC;
+  border-radius: 0 !important;
+  overflow: hidden;
+}
+
+pre {
+  background-color: #1E1E1E;
+  padding: 15px;
+  white-space: pre-wrap;
+  color: #e0e0e0;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 0.9rem;
+  overflow-x: auto;
+}
+
+code {
+  font-family: 'Consolas', 'Monaco', monospace;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 2px 4px;
+  font-size: 0.9em;
+}
+
+/* Utility classes */
+.glass-effect {
+  background: rgba(30, 30, 30, 0.8);
+  border: 1px solid rgba(66, 66, 66, 0.6);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.turquoise-highlight {
+  color: #38B2AC;
+}
+
+/* Theme colors */
+:root {
+  --primary-color: #38B2AC;
+  --primary-dark: #2C7A7B;
+  --background: #1E1E1E;
+  --surface: #252526;
+  --border: #333333;
+  --text-primary: #FFFFFF;
+  --text-secondary: #E0E0E0;
+  --text-muted: #A0A0A0;
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1E1E1E;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #555;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #777;
+} 

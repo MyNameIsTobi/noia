@@ -1,0 +1,216 @@
+/* Process Scanner Styles */
+.process-scanner {
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: auto;
+}
+
+/* Modernere und kompaktere Überschrift */
+.process-scanner-header {
+  margin-bottom: 1.25rem;
+  text-align: left;
+  border-bottom: 1px solid #333;
+  padding-bottom: 0.75rem;
+  margin-top: 1rem;
+}
+
+.process-scanner-header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #e0e0e0;
+  margin-bottom: 0.5rem;
+}
+
+.process-scanner-info {
+  margin-bottom: 0.5rem;
+  color: #a0a0a0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* Modern Process List */
+.process-list-container {
+  margin-top: 1rem;
+  position: relative;
+}
+
+/* Aktualisieren-Button nach links verschieben */
+.refresh-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: #2D2D2D;
+  border: 1px solid #444;
+  color: #ccc;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 16px;
+  align-self: flex-start;
+}
+
+.refresh-button:hover {
+  background-color: #333;
+  border-color: #555;
+}
+
+.process-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+/* Modernere Prozess-Karten */
+.process-item {
+  position: relative;
+  background: #252526;
+  border: 1px solid #333;
+  padding: 16px;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  overflow: visible;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.process-item:hover {
+  border-color: #38B2AC;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.process-item.selected {
+  border-color: #38B2AC;
+  background: rgba(56, 178, 172, 0.08);
+}
+
+.process-name {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 12px;
+  padding-right: 60px;
+}
+
+.process-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.process-pid {
+  position: absolute;
+  top: 16px;
+  right: 10px;
+  font-size: 0.7rem;
+  color: #666;
+  background: rgba(0,0,0,0.2);
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+/* Verbesserte Darstellung von CPU und Memory mit Icons */
+.process-cpu, .process-memory {
+  color: #e0e0e0;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+}
+
+.process-cpu svg, .process-memory svg {
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+/* Speicherverbrauch rechtsbündig ausrichten */
+.process-memory {
+  justify-content: flex-end;
+}
+
+/* Loading State */
+.loading-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 2rem;
+}
+
+.loader {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(56, 178, 172, 0.2);
+  border-top: 4px solid #38B2AC;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Empty state */
+.empty-processes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  background: rgba(30, 30, 30, 0.5);
+  border: 1px dashed #444;
+  margin-top: 2rem;
+}
+
+/* Process item placeholders */
+.process-item-placeholder {
+  height: 150px;
+  background: #252526;
+  border: 1px solid #333;
+  padding: 16px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.placeholder-line {
+  height: 12px;
+  margin-bottom: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+}
+
+.placeholder-line.name {
+  width: 70%;
+  height: 18px;
+  margin-bottom: 15px;
+}
+
+.placeholder-line.details {
+  width: 90%;
+}
+
+.placeholder-line.metrics {
+  width: 45%;
+  margin-right: 5%;
+  display: inline-block;
+} 

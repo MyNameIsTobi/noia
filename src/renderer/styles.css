@@ -1,0 +1,424 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles below */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border-radius: 0 !important;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #1E1E1E;
+  color: #fff;
+  line-height: 1.6;
+  overflow: hidden;
+}
+
+/* Reset die alten titlebar Styles */
+.vscode-titlebar {
+  display: none;
+}
+
+/* Moderne Titelleiste mit minimalistischem Design */
+.window-titlebar {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  background-color: #1E1E1E;
+  user-select: none;
+  -webkit-app-region: drag;
+  z-index: 1000;
+  border-bottom: 1px solid #121212;
+  margin: 0;
+  padding: 0;
+}
+
+.window-titlebar-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.window-titlebar-icon {
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
+  gap: 6px;
+}
+
+.window-title {
+  font-size: 12px;
+  color: #9e9e9e;
+  font-weight: 400;
+}
+
+/* Minimale Windows-Steuerelemente */
+.window-controls {
+  display: flex;
+  height: 100%;
+  -webkit-app-region: no-drag;
+  margin: 0 0 0 auto;
+  padding: 0;
+}
+
+.window-button {
+  width: 46px;
+  height: 30px;
+  background: transparent;
+  border: none;
+  outline: none;
+  -webkit-app-region: no-drag;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  margin: 0;
+  padding: 0;
+}
+
+.win-icon {
+  font-size: 10px;
+  line-height: 1;
+}
+
+/* Nur Hover-Effekt für den Schließen-Button */
+.win-close {
+  color: #aaa;
+}
+
+.win-close:hover {
+  background-color: #E81123;
+  color: white;
+}
+
+/* Content container needs padding-top for the fixed titlebar */
+.content-container {
+  padding-top: 30px;
+  width: 100%;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+/* Ensure app wrapper has correct positioning */
+.app-wrapper {
+  padding-top: 0;
+  position: relative;
+}
+
+/* Ensuring no rounded corners */
+*, *::before, *::after {
+  border-radius: 0 !important;
+}
+
+/* Verbesserte Farbkontraste für bessere UX */
+.window-titlebar svg path {
+  fill: #38B2AC;
+}
+
+.window-titlebar svg path:last-child {
+  fill: #2C7A7B;
+}
+
+/* Glass effect for cards (with sharp corners) */
+.glass-effect {
+  background: rgba(30, 30, 30, 0.8);
+  border: 1px solid rgba(66, 66, 66, 0.6);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* Colorful highlights */
+.turquoise-highlight {
+  color: #38B2AC;
+}
+
+.app-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #e0e0e0;
+}
+
+p {
+  margin-bottom: 2rem;
+  color: #a0a0a0;
+}
+
+.card {
+  background: #252526;
+  border: 1px solid #333333;
+  padding: 20px;
+  margin-top: 20px;
+  transition: all 0.3s;
+  border-radius: 0 !important;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+  border-color: #38B2AC;
+}
+
+button {
+  background-color: #38B2AC;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s;
+  margin-top: 10px;
+  border-radius: 0 !important;
+}
+
+button:hover {
+  background-color: #319795;
+  transform: translateY(-2px);
+}
+
+button:disabled {
+  background-color: #2F2F2F;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #e0e0e0;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  background: #3C3C3C;
+  border: 1px solid #555555;
+  font-size: 16px;
+  color: #fff;
+  border-radius: 0 !important;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #38B2AC;
+  box-shadow: 0 0 0 2px rgba(56, 178, 172, 0.2);
+}
+
+.result-container {
+  margin-top: 20px;
+  padding: 15px;
+  background: #252526;
+  border-left: 4px solid #38B2AC;
+  border-radius: 0 !important;
+  overflow: hidden;
+}
+
+pre {
+  background-color: #1E1E1E;
+  padding: 15px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-family: 'Consolas', 'Monaco', monospace;
+  max-height: 300px;
+  overflow-y: auto;
+  color: #e0e0e0;
+  border-radius: 0 !important;
+  overflow: hidden;
+}
+
+/* Process List Styles */
+.process-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.process-item {
+  background: #252526;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #333333;
+  border-radius: 0 !important;
+  overflow: hidden;
+}
+
+.process-item:hover {
+  background: #2D2D2D;
+  transform: scale(1.02);
+  border-color: #38B2AC;
+}
+
+.process-item.active {
+  border: 1px solid #38B2AC;
+  background: rgba(56, 178, 172, 0.1);
+}
+
+.process-name {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #fff;
+}
+
+.process-details {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #a0a0a0;
+}
+
+.process-metric {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.process-metric-value {
+  color: #38B2AC;
+  font-weight: 500;
+}
+
+/* Back button */
+.back-button {
+  display: flex;
+  align-items: center;
+  background-color: transparent;
+  border: 1px solid #38B2AC;
+  color: #38B2AC;
+  padding: 6px 12px;
+}
+
+.back-button:hover {
+  background-color: rgba(56, 178, 172, 0.1);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Loading indicator */
+.loading-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(56, 178, 172, 0.2);
+  border-radius: 50%;
+  border-top-color: #38B2AC;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Acrylic background for dark theme */
+.acrylic-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  background: #1E1E1E;
+  pointer-events: none;
+}
+
+.acrylic-background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('data:image/png;base64,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');
+  opacity: 0.02;
+  pointer-events: none;
+}
+
+/* Additional CSS to ensure sharp corners and proper layout */
+html, body, #root, .app-wrapper {
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  border-radius: 0 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  background-color: #1E1E1E;
+  position: relative;
+  padding-top: 30px;
+}
+
+/* Fix for buttons in titlebar */
+.titlebar-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Override any border-radius that might cause rounded corners */
+.card, button, .process-item, input, pre, .glass-effect {
+  border-radius: 0 !important;
+  overflow: hidden;
+} 

@@ -1,0 +1,46 @@
+# Node.js / npm
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Electron
+dist/
+build/
+out/
+app/
+
+# Rust
+src/rust/target/
+src/rust/Cargo.lock
+**/*.rs.bk
+**/*.node
+
+# Binaries
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Build outputs
+src/renderer/dist/
+
+# IDE / Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Logs
+logs/
+*.log
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production 

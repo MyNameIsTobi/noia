@@ -1,0 +1,107 @@
+/* CSS-Variablen für verschiedene Themen */
+:root {
+  /* Light theme (Standard) */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --bg-accent: #e0e0e0;
+  --bg-hover: #f0f0f0;
+  --bg-selected: #e6f7ff;
+  --bg-button: #f0f0f0;
+  --bg-button-hover: #e0e0e0;
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --primary: #4F46E5;
+  --border-color: #e0e0e0;
+}
+
+/* Dark theme */
+.dark {
+  --bg-primary: #1e1e1e;
+  --bg-secondary: #252525;
+  --bg-accent: #2d2d2d;
+  --bg-hover: #333333;
+  --bg-selected: #2c3a47;
+  --bg-button: #333333;
+  --bg-button-hover: #404040;
+  --text-primary: #f0f0f0;
+  --text-secondary: #a0a0a0;
+  --primary: #6366f1;
+  --border-color: #333333;
+}
+
+/* Allgemeine Stile */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body, html {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* App Container */
+.app {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.app-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Grundlegende Eingabestile */
+input, select, button {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 14px;
+  outline: none;
+}
+
+input:focus, select:focus {
+  border-color: var(--primary);
+}
+
+/* Scrollbar-Anpassung */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-accent);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--bg-button-hover);
+} 

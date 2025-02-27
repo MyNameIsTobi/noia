@@ -1,0 +1,29 @@
+{
+  "name": "noia-native",
+  "version": "0.1.0",
+  "description": "Rust native module for the Noia application",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "napi": {
+    "name": "noia-native",
+    "triples": {
+      "defaults": true,
+      "additional": [
+        "x86_64-pc-windows-msvc",
+        "aarch64-pc-windows-msvc"
+      ]
+    }
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@napi-rs/cli": "^2.16.5"
+  },
+  "engines": {
+    "node": ">= 14"
+  },
+  "scripts": {
+    "build": "napi build --platform --release",
+    "build:debug": "napi build --platform",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+} 

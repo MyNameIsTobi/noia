@@ -1,0 +1,101 @@
+/* Animation Definitions */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { 
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Animation Classes */
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+.pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Loading indicators */
+.loading-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(56, 178, 172, 0.2);
+  border-radius: 50%;
+  border-top-color: #38B2AC;
+  animation: spin 1s ease-in-out infinite;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, 
+    rgba(55, 55, 55, 0.1) 25%, 
+    rgba(55, 55, 55, 0.3) 50%, 
+    rgba(55, 55, 55, 0.1) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.dot-loader {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.dot-loader span {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background-color: #38B2AC;
+  border-radius: 50%;
+  opacity: 0.6;
+}
+
+.dot-loader span:nth-child(1) {
+  animation: pulse 1.2s infinite 0s;
+}
+
+.dot-loader span:nth-child(2) {
+  animation: pulse 1.2s infinite 0.2s;
+}
+
+.dot-loader span:nth-child(3) {
+  animation: pulse 1.2s infinite 0.4s;
+} 
