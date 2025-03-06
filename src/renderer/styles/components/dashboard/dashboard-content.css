@@ -1,0 +1,10 @@
+.dashboard-content {
+  margin-left: 48px;
+  padding: 48px 24px;
+  height: 100%;
+  width: calc(100% - 48px);
+  overflow-y: auto;
+  background: #1e1e1e;
+  display: flex;
+  flex-direction: column;
+} 

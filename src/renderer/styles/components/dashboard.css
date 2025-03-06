@@ -1,14 +1,12 @@
 /* Dashboard Styles */
 .dashboard-page {
   width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background-color: #252525;
-  overflow: auto;
+  height: calc(100vh - 30px);
+  position: relative;
+  background-color: #1e1e1e;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
 }
 
 /* Leeres Dashboard wie gewünscht */ 

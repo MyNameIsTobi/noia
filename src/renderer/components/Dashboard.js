@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import DashboardMenu from './dashboard/DashboardMenu';
+import DashboardContent from './dashboard/DashboardContent';
 import '../styles/components/dashboard.css';
 
 const Dashboard = ({ selectedProcess }) => {
-  // Leere Dashboard-Seite nach Auswahl eines Prozesses anzeigen
-  // Keine Informationen und kein Zurück-Button wie gefordert
+  const [currentPage, setCurrentPage] = useState('home');
+  const [isMenuExpanded, setIsMenuExpanded] = useState(false);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    setIsMenuExpanded(false);
+  };
+
   return (
     <motion.div 
       className="dashboard-page"
@@ -12,7 +20,13 @@ const Dashboard = ({ selectedProcess }) => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
-      {/* Hier absichtlich leerer Inhalt, damit wir später erweitern können */}
+      <DashboardMenu 
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
+        isExpanded={isMenuExpanded}
+        onToggleExpand={() => setIsMenuExpanded(!isMenuExpanded)}
+      />
+      <DashboardContent currentPage={currentPage} />
     </motion.div>
   );
 };
