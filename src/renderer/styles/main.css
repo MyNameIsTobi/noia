@@ -6,6 +6,7 @@
 @import './components/title-bar.css';
 @import './components/process-scanner.css';
 @import './components/dashboard.css';
+@import './components/dashboard/pages/code-editor.css';
 @import './animations.css';
 @import './App.css';
 

@@ -1,6 +1,7 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const url = require('url');
+const fs = require('fs').promises;
 
 // Import Rust native module (will be available after building)
 let rustModule;
@@ -152,5 +153,45 @@ ipcMain.on('window-control', (event, action) => {
       break;
     default:
       console.warn(`Unknown window control action: ${action}`);
+  }
+});
+
+// File operation handlers
+ipcMain.handle('file-load', async () => {
+  try {
+    const result = await dialog.showOpenDialog(mainWindow, {
+      properties: ['openFile'],
+      filters: [
+        { name: 'Noia Files', extensions: ['noia'] }
+      ]
+    });
+
+    if (!result.canceled && result.filePaths.length > 0) {
+      const filePath = result.filePaths[0];
+      const content = await fs.readFile(filePath, 'utf8');
+      return { success: true, content, filePath };
+    }
+    return { success: false, error: 'No file selected' };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('file-save', async (event, content) => {
+  try {
+    const result = await dialog.showSaveDialog(mainWindow, {
+      filters: [
+        { name: 'Noia Files', extensions: ['noia'] }
+      ]
+    });
+
+    if (!result.canceled && result.filePath) {
+      const filePath = result.filePath.endsWith('.noia') ? result.filePath : `${result.filePath}.noia`;
+      await fs.writeFile(filePath, content, 'utf8');
+      return { success: true, filePath };
+    }
+    return { success: false, error: 'Save cancelled' };
+  } catch (error) {
+    return { success: false, error: error.message };
   }
 }); 

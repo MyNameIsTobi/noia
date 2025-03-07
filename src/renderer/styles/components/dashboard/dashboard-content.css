@@ -1,10 +1,12 @@
 .dashboard-content {
   margin-left: 48px;
-  padding: 48px 24px;
-  height: 100%;
+  padding: 24px;
+  padding-top: 54px; /* 30px für Titlebar + 24px normales padding */
+  height: 100vh;
   width: calc(100% - 48px);
   overflow-y: auto;
   background: #1e1e1e;
   display: flex;
   flex-direction: column;
+  min-height: 0; /* Verhindert Flex-Überlauf */
 } 

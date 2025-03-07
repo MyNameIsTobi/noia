@@ -18,6 +18,11 @@ contextBridge.exposeInMainWorld('electron', {
     getSystemInfo: () => ipcRenderer.invoke('rust-function', 'getSystemInfo')
   },
   
+  fileOps: {
+    loadFile: () => ipcRenderer.invoke('file-load'),
+    saveFile: (content) => ipcRenderer.invoke('file-save', content),
+  },
+  
   // Add any other APIs you want to expose to the renderer here
   app: {
     // Navigate to different pages within the app

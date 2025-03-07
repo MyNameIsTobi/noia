@@ -1,0 +1,178 @@
+/* Code Editor Layout */
+.code-editor {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background: #1e1e1e;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.current-file {
+  font-size: 14px;
+  color: #858585;
+  font-weight: normal;
+  margin-left: 8px;
+}
+
+.toolbar {
+  display: flex;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid #2d2d2d;
+}
+
+.toolbar-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: #333333;
+  border: 1px solid #404040;
+  color: #d4d4d4;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin: 0;
+}
+
+.toolbar-button:hover {
+  background: #404040;
+  border-color: #505050;
+}
+
+.toolbar-button svg {
+  width: 14px;
+  height: 14px;
+}
+
+.editor-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  background: #1e1e1e;
+  min-height: 0; /* Wichtig für Flexbox-Scrolling */
+  flex-direction: column;
+}
+
+.code-section {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  margin-bottom: 16px; /* Doppelter Abstand zur Konsole */
+}
+
+.line-numbers {
+  padding: 8px 12px;
+  border-right: 1px solid #2d2d2d;
+  color: #858585;
+  user-select: none;
+  text-align: right;
+  min-width: 50px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 14px;
+  line-height: 1.4;
+  overflow-y: hidden;
+  position: sticky;
+  left: 0;
+  padding-right: 16px;
+}
+
+.line-number {
+  height: 1.4em;
+}
+
+.code-area {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
+.code-input, .code-highlighting {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  border: 0;
+  padding: 8px;
+  padding-left: 16px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: pre;
+  tab-size: 4;
+  overflow: auto;
+}
+
+.code-input {
+  background: transparent;
+  color: transparent;
+  caret-color: #d4d4d4;
+  resize: none;
+  z-index: 1;
+  outline: none !important;
+}
+
+.code-highlighting {
+  pointer-events: none;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  z-index: 0;
+}
+
+/* Minimale Syntax-Highlighting-Styles */
+.token.comment { color: #608b4e; }
+.token.keyword { color: #569cd6; }
+.token.string { color: #ce9178; }
+.token.number { color: #b5cea8; }
+.token.function { color: #dcdcaa; }
+.token.class-name { color: #4ec9b0; }
+.token.boolean { color: #569cd6; }
+.token.operator { color: #d4d4d4; }
+.token.punctuation { color: #d4d4d4; }
+
+/* Selection-Styling */
+.code-input::selection {
+  background: rgba(56, 178, 172, 0.3);
+  color: transparent;
+}
+
+/* Console Area */
+.console-section {
+  height: 150px;
+  min-height: 150px;
+  border-top: 1px solid #2d2d2d;
+  background: #1e1e1e;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.console-header {
+  padding: 4px 8px;
+  background: #252526;
+  border-bottom: 1px solid #2d2d2d;
+  display: flex;
+  align-items: center;
+  user-select: none;
+}
+
+.console-title {
+  color: #858585;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.console-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #d4d4d4;
+  background: #1e1e1e;
+} 

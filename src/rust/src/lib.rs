@@ -5,6 +5,9 @@ use napi::{Error, Result as NapiResult, Status};
 use serde::{Deserialize, Serialize};
 use sysinfo::{ProcessExt, System, SystemExt, PidExt, CpuExt};
 
+// Language-Modul einbinden
+pub mod language;
+
 // Struct to represent process information
 #[derive(Serialize, Deserialize)]
 struct ProcessInfo {
@@ -28,6 +31,7 @@ static mut SYSTEM: Option<System> = None;
 
 // Initialize the system monitoring
 fn get_system() -> &'static mut System {
+    #[allow(static_mut_refs)]
     unsafe {
         if SYSTEM.is_none() {
             SYSTEM = Some(System::new_all());
@@ -165,4 +169,22 @@ pub fn get_system_info() -> String {
 #[napi]
 pub fn add_numbers(a: i32, b: i32) -> i32 {
     a + b
+}
+
+#[cfg(test)]
+mod tests {
+    // Language-Tests
+    #[test]
+    fn test_language_module() {
+        // Dieser Test stellt sicher, dass das Language-Modul korrekt eingebunden ist
+        use super::language::lexer::Lexer;
+        use super::language::types::Token;
+        
+        let mut lexer = Lexer::new("var x = 42;");
+        let tokens: Vec<_> = std::iter::from_fn(|| lexer.next_token().ok())
+            .take_while(|t| !matches!(t.token, Token::EOF))
+            .collect();
+        
+        assert!(!tokens.is_empty());
+    }
 } 
