@@ -157,6 +157,7 @@
   border-bottom: 1px solid #2d2d2d;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   user-select: none;
 }
 
@@ -164,6 +165,25 @@
   color: #858585;
   font-size: 12px;
   font-weight: 500;
+}
+
+.console-executing {
+  color: #38B2AC;
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.console-executing::after {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background-color: #38B2AC;
+  border-radius: 50%;
+  animation: pulse 1s infinite;
 }
 
 .console-content {
@@ -175,4 +195,27 @@
   line-height: 1.4;
   color: #d4d4d4;
   background: #1e1e1e;
+}
+
+.console-line {
+  padding: 2px 0;
+  border-bottom: 1px solid rgba(45, 45, 45, 0.3);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.console-line:last-child {
+  border-bottom: none;
+}
+
+/* Error messages in console */
+.console-line:has(span[data-type="error"]) {
+  color: #f14c4c;
+  background: rgba(241, 76, 76, 0.1);
+}
+
+@keyframes pulse {
+  0% { opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { opacity: 0.4; }
 } 

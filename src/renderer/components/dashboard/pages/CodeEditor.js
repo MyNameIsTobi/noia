@@ -10,10 +10,26 @@ const CodeEditor = () => {
   const [lineCount, setLineCount] = useState(1);
   const [currentFile, setCurrentFile] = useState(null);
   const [consoleContent, setConsoleContent] = useState([]);
+  const [isExecuting, setIsExecuting] = useState(false);
   const lineNumbersRef = useRef(null);
   const codeInputRef = useRef(null);
   const highlightingRef = useRef(null);
   const [highlightedCode, setHighlightedCode] = useState('');
+
+  // Füge useEffect für Console Output Listener hinzu
+  useEffect(() => {
+    if (window.electron && window.electron.rustAPI) {
+      // Registriere den Console Output Handler
+      const removeListener = window.electron.rustAPI.onConsoleOutput((output) => {
+        setConsoleContent(prev => [...prev, output]);
+      });
+
+      // Cleanup beim Unmount
+      return () => {
+        if (removeListener) removeListener();
+      };
+    }
+  }, []);
 
   // Aktualisiere die Zeilennummern und Syntax Highlighting wenn sich der Content ändert
   useEffect(() => {
@@ -97,9 +113,28 @@ const CodeEditor = () => {
     }
   };
 
-  const handleExecute = () => {
-    // TODO: Implementiere Code ausführen
-    console.log('Execute code');
+  const handleExecute = async () => {
+    if (!content.trim()) return;
+
+    try {
+      setIsExecuting(true);
+      // Leere die Konsole vor der Ausführung
+      setConsoleContent([]);
+
+      if (window.electron && window.electron.rustAPI) {
+        const result = await window.electron.rustAPI.executeCode(content);
+        
+        if (result.error) {
+          // Zeige Fehler in der Konsole an
+          setConsoleContent(prev => [...prev, `Error: ${result.error}`]);
+        }
+      }
+    } catch (error) {
+      // Zeige unerwartete Fehler in der Konsole an
+      setConsoleContent(prev => [...prev, `Runtime Error: ${error.message}`]);
+    } finally {
+      setIsExecuting(false);
+    }
   };
 
   return (
@@ -160,10 +195,11 @@ const CodeEditor = () => {
           <div className="console-section">
             <div className="console-header">
               <span className="console-title">Console</span>
+              {isExecuting && <span className="console-executing">Running...</span>}
             </div>
             <div className="console-content">
               {consoleContent.map((line, index) => (
-                <div key={index}>{line}</div>
+                <div key={index} className="console-line">{line}</div>
               ))}
             </div>
           </div>

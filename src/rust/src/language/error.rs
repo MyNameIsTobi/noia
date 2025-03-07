@@ -3,6 +3,7 @@ pub enum LexerError {
     InvalidCharacter(char, usize, usize),  // Zeichen, Zeile, Spalte
     UnterminatedString(usize, usize),      // Zeile, Spalte
     InvalidNumber(String, usize, usize),    // Nummer als String, Zeile, Spalte
+    UnterminatedBlockComment(usize, usize), // Zeile, Spalte wo der Kommentar begann
 }
 
 #[derive(Debug)]
@@ -35,6 +36,8 @@ impl std::fmt::Display for LexerError {
                 write!(f, "Unterminated string at line {}, column {}", line, col),
             LexerError::InvalidNumber(num, line, col) => 
                 write!(f, "Invalid number '{}' at line {}, column {}", num, line, col),
+            LexerError::UnterminatedBlockComment(line, col) =>
+                write!(f, "Unterminated block comment starting at line {}, column {}", line, col),
         }
     }
 }

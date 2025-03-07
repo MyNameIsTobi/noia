@@ -15,7 +15,18 @@ contextBridge.exposeInMainWorld('electron', {
     searchProcesses: (namePattern) => ipcRenderer.invoke('rust-function', 'searchProcesses', namePattern),
     getProcessInfo: (pid) => ipcRenderer.invoke('rust-function', 'getProcessInfo', pid),
     getAllProcesses: () => ipcRenderer.invoke('rust-function', 'getAllProcesses'),
-    getSystemInfo: () => ipcRenderer.invoke('rust-function', 'getSystemInfo')
+    getSystemInfo: () => ipcRenderer.invoke('rust-function', 'getSystemInfo'),
+    
+    // Code execution
+    executeCode: (code) => ipcRenderer.invoke('rust-function', 'executeCode', code),
+    
+    // Console output handling
+    onConsoleOutput: (callback) => {
+      ipcRenderer.on('console-output', (_, output) => callback(output));
+      return () => {
+        ipcRenderer.removeAllListeners('console-output');
+      };
+    }
   },
   
   fileOps: {

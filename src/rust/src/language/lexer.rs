@@ -44,6 +44,49 @@ impl<'a> Lexer<'a> {
         }
     }
 
+    fn skip_line_comment(&mut self) {
+        while let Some(c) = self.current_char {
+            if c == '\n' {
+                self.advance();
+                break;
+            }
+            self.advance();
+        }
+    }
+
+    fn skip_block_comment(&mut self) -> Result<(), LexerError> {
+        let start_pos = self.position;
+        self.advance(); // Skip *
+        
+        let mut nesting_level = 1;
+        
+        while let Some(c) = self.current_char {
+            match c {
+                '/' => {
+                    self.advance();
+                    if let Some('*') = self.current_char {
+                        self.advance();
+                        nesting_level += 1;
+                    }
+                }
+                '*' => {
+                    self.advance();
+                    if let Some('/') = self.current_char {
+                        self.advance();
+                        nesting_level -= 1;
+                        if nesting_level == 0 {
+                            return Ok(());
+                        }
+                    }
+                }
+                _ => self.advance(),
+            }
+        }
+        
+        // Wenn wir hier ankommen, wurde der Kommentar nicht geschlossen
+        Err(LexerError::UnterminatedBlockComment(start_pos.line, start_pos.column - 2)) // -2 für den /* am Anfang
+    }
+
     fn read_identifier(&mut self) -> Result<TokenWithPosition, LexerError> {
         let current_pos = self.position;
         let mut identifier = String::new();
@@ -149,189 +192,204 @@ impl<'a> Lexer<'a> {
     }
 
     pub fn next_token(&mut self) -> Result<TokenWithPosition, LexerError> {
-        self.skip_whitespace();
-        
-        let current_pos = self.position;
-        
-        if let Some(c) = self.current_char {
-            match c {
-                'a'..='z' | 'A'..='Z' | '_' => {
-                    self.read_identifier()
-                },
-                '0'..='9' => self.read_number(),
-                '"' => self.read_string(),
-                '+' => {
-                    self.advance();
-                    Ok(TokenWithPosition {
-                        token: Token::Plus,
-                        position: current_pos,
-                    })
-                }
-                '-' => {
-                    self.advance();
-                    Ok(TokenWithPosition {
-                        token: Token::Minus,
-                        position: current_pos,
-                    })
-                }
-                '*' => {
-                    self.advance();
-                    Ok(TokenWithPosition {
-                        token: Token::Multiply,
-                        position: current_pos,
-                    })
-                }
-                '/' => {
-                    self.advance();
-                    Ok(TokenWithPosition {
-                        token: Token::Divide,
-                        position: current_pos,
-                    })
-                }
-                '=' => {
-                    self.advance();
-                    if let Some('=') = self.current_char {
+        loop {
+            self.skip_whitespace();
+            
+            let current_pos = self.position;
+            
+            if let Some(c) = self.current_char {
+                match c {
+                    '/' => {
                         self.advance();
-                        Ok(TokenWithPosition {
-                            token: Token::Equals,
-                            position: current_pos,
-                        })
-                    } else {
-                        Ok(TokenWithPosition {
-                            token: Token::Assign,
+                        match self.current_char {
+                            Some('/') => {
+                                self.advance();
+                                self.skip_line_comment();
+                                continue;
+                            }
+                            Some('*') => {
+                                self.skip_block_comment()?;
+                                continue;
+                            }
+                            _ => {
+                                return Ok(TokenWithPosition {
+                                    token: Token::Divide,
+                                    position: current_pos,
+                                });
+                            }
+                        }
+                    }
+                    'a'..='z' | 'A'..='Z' | '_' => {
+                        return self.read_identifier()
+                    },
+                    '0'..='9' => return self.read_number(),
+                    '"' => return self.read_string(),
+                    '+' => {
+                        self.advance();
+                        return Ok(TokenWithPosition {
+                            token: Token::Plus,
                             position: current_pos,
                         })
                     }
-                }
-                '!' => {
-                    self.advance();
-                    if let Some('=') = self.current_char {
+                    '-' => {
                         self.advance();
-                        Ok(TokenWithPosition {
-                            token: Token::NotEquals,
-                            position: current_pos,
-                        })
-                    } else {
-                        Ok(TokenWithPosition {
-                            token: Token::Not,
+                        return Ok(TokenWithPosition {
+                            token: Token::Minus,
                             position: current_pos,
                         })
                     }
-                }
-                '>' => {
-                    self.advance();
-                    if let Some('=') = self.current_char {
+                    '*' => {
                         self.advance();
-                        Ok(TokenWithPosition {
-                            token: Token::GreaterEquals,
-                            position: current_pos,
-                        })
-                    } else {
-                        Ok(TokenWithPosition {
-                            token: Token::Greater,
+                        return Ok(TokenWithPosition {
+                            token: Token::Multiply,
                             position: current_pos,
                         })
                     }
-                }
-                '<' => {
-                    self.advance();
-                    if let Some('=') = self.current_char {
+                    '=' => {
                         self.advance();
-                        Ok(TokenWithPosition {
-                            token: Token::LessEquals,
-                            position: current_pos,
-                        })
-                    } else {
-                        Ok(TokenWithPosition {
-                            token: Token::Less,
+                        if let Some('=') = self.current_char {
+                            self.advance();
+                            return Ok(TokenWithPosition {
+                                token: Token::Equals,
+                                position: current_pos,
+                            })
+                        } else {
+                            return Ok(TokenWithPosition {
+                                token: Token::Assign,
+                                position: current_pos,
+                            })
+                        }
+                    }
+                    '!' => {
+                        self.advance();
+                        if let Some('=') = self.current_char {
+                            self.advance();
+                            return Ok(TokenWithPosition {
+                                token: Token::NotEquals,
+                                position: current_pos,
+                            })
+                        } else {
+                            return Ok(TokenWithPosition {
+                                token: Token::Not,
+                                position: current_pos,
+                            })
+                        }
+                    }
+                    '>' => {
+                        self.advance();
+                        if let Some('=') = self.current_char {
+                            self.advance();
+                            return Ok(TokenWithPosition {
+                                token: Token::GreaterEquals,
+                                position: current_pos,
+                            })
+                        } else {
+                            return Ok(TokenWithPosition {
+                                token: Token::Greater,
+                                position: current_pos,
+                            })
+                        }
+                    }
+                    '<' => {
+                        self.advance();
+                        if let Some('=') = self.current_char {
+                            self.advance();
+                            return Ok(TokenWithPosition {
+                                token: Token::LessEquals,
+                                position: current_pos,
+                            })
+                        } else {
+                            return Ok(TokenWithPosition {
+                                token: Token::Less,
+                                position: current_pos,
+                            })
+                        }
+                    }
+                    '&' => {
+                        self.advance();
+                        if let Some('&') = self.current_char {
+                            self.advance();
+                            return Ok(TokenWithPosition {
+                                token: Token::And,
+                                position: current_pos,
+                            })
+                        } else {
+                            return Err(LexerError::InvalidCharacter('&', current_pos.line, current_pos.column))
+                        }
+                    }
+                    '|' => {
+                        self.advance();
+                        if let Some('|') = self.current_char {
+                            self.advance();
+                            return Ok(TokenWithPosition {
+                                token: Token::Or,
+                                position: current_pos,
+                            })
+                        } else {
+                            return Err(LexerError::InvalidCharacter('|', current_pos.line, current_pos.column))
+                        }
+                    }
+                    '(' => {
+                        self.advance();
+                        return Ok(TokenWithPosition {
+                            token: Token::LeftParen,
                             position: current_pos,
                         })
                     }
-                }
-                '&' => {
-                    self.advance();
-                    if let Some('&') = self.current_char {
+                    ')' => {
                         self.advance();
-                        Ok(TokenWithPosition {
-                            token: Token::And,
+                        return Ok(TokenWithPosition {
+                            token: Token::RightParen,
                             position: current_pos,
                         })
-                    } else {
-                        Err(LexerError::InvalidCharacter('&', current_pos.line, current_pos.column))
                     }
-                }
-                '|' => {
-                    self.advance();
-                    if let Some('|') = self.current_char {
+                    '{' => {
                         self.advance();
-                        Ok(TokenWithPosition {
-                            token: Token::Or,
+                        return Ok(TokenWithPosition {
+                            token: Token::LeftBrace,
                             position: current_pos,
                         })
-                    } else {
-                        Err(LexerError::InvalidCharacter('|', current_pos.line, current_pos.column))
                     }
+                    '}' => {
+                        self.advance();
+                        return Ok(TokenWithPosition {
+                            token: Token::RightBrace,
+                            position: current_pos,
+                        })
+                    }
+                    ',' => {
+                        self.advance();
+                        return Ok(TokenWithPosition {
+                            token: Token::Comma,
+                            position: current_pos,
+                        })
+                    }
+                    ':' => {
+                        self.advance();
+                        return Ok(TokenWithPosition {
+                            token: Token::Colon,
+                            position: current_pos,
+                        })
+                    }
+                    ';' => {
+                        self.advance();
+                        return Ok(TokenWithPosition {
+                            token: Token::Semicolon,
+                            position: current_pos,
+                        })
+                    }
+                    _ => return Err(LexerError::InvalidCharacter(
+                        c,
+                        current_pos.line,
+                        current_pos.column,
+                    )),
                 }
-                '(' => {
-                    self.advance();
-                    Ok(TokenWithPosition {
-                        token: Token::LeftParen,
-                        position: current_pos,
-                    })
-                }
-                ')' => {
-                    self.advance();
-                    Ok(TokenWithPosition {
-                        token: Token::RightParen,
-                        position: current_pos,
-                    })
-                }
-                '{' => {
-                    self.advance();
-                    Ok(TokenWithPosition {
-                        token: Token::LeftBrace,
-                        position: current_pos,
-                    })
-                }
-                '}' => {
-                    self.advance();
-                    Ok(TokenWithPosition {
-                        token: Token::RightBrace,
-                        position: current_pos,
-                    })
-                }
-                ',' => {
-                    self.advance();
-                    Ok(TokenWithPosition {
-                        token: Token::Comma,
-                        position: current_pos,
-                    })
-                }
-                ':' => {
-                    self.advance();
-                    Ok(TokenWithPosition {
-                        token: Token::Colon,
-                        position: current_pos,
-                    })
-                }
-                ';' => {
-                    self.advance();
-                    Ok(TokenWithPosition {
-                        token: Token::Semicolon,
-                        position: current_pos,
-                    })
-                }
-                _ => Err(LexerError::InvalidCharacter(
-                    c,
-                    current_pos.line,
-                    current_pos.column,
-                )),
+            } else {
+                return Ok(TokenWithPosition {
+                    token: Token::EOF,
+                    position: current_pos,
+                });
             }
-        } else {
-            Ok(TokenWithPosition {
-                token: Token::EOF,
-                position: current_pos,
-            })
         }
     }
 }
@@ -523,5 +581,79 @@ mod tests {
         let mut lexer = Lexer::new(input);
         let result = lexer.next_token();
         assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_single_line_comments() {
+        let input = "var x = 42; // Dies ist ein Kommentar\nvar y = 23;";
+        let mut lexer = Lexer::new(input);
+        
+        // var x = 42;
+        assert_eq!(lexer.next_token().unwrap().token, Token::Var);
+        assert_eq!(lexer.next_token().unwrap().token, Token::Identifier("x".to_string()));
+        assert_eq!(lexer.next_token().unwrap().token, Token::Assign);
+        assert_eq!(lexer.next_token().unwrap().token, Token::Number(42.0));
+        assert_eq!(lexer.next_token().unwrap().token, Token::Semicolon);
+        
+        // Nächste Zeile nach Kommentar
+        assert_eq!(lexer.next_token().unwrap().token, Token::Var);
+        assert_eq!(lexer.next_token().unwrap().token, Token::Identifier("y".to_string()));
+        assert_eq!(lexer.next_token().unwrap().token, Token::Assign);
+        assert_eq!(lexer.next_token().unwrap().token, Token::Number(23.0));
+        assert_eq!(lexer.next_token().unwrap().token, Token::Semicolon);
+        assert_eq!(lexer.next_token().unwrap().token, Token::EOF);
+    }
+
+    #[test]
+    fn test_multi_line_comments() {
+        let input = "var x = /* Mehrzeiliger\nKommentar */ 42;\n/* Noch ein\nKommentar */var y = 23;";
+        let mut lexer = Lexer::new(input);
+        
+        // var x = 42;
+        assert_eq!(lexer.next_token().unwrap().token, Token::Var);
+        assert_eq!(lexer.next_token().unwrap().token, Token::Identifier("x".to_string()));
+        assert_eq!(lexer.next_token().unwrap().token, Token::Assign);
+        assert_eq!(lexer.next_token().unwrap().token, Token::Number(42.0));
+        assert_eq!(lexer.next_token().unwrap().token, Token::Semicolon);
+        
+        // var y = 23;
+        assert_eq!(lexer.next_token().unwrap().token, Token::Var);
+        assert_eq!(lexer.next_token().unwrap().token, Token::Identifier("y".to_string()));
+        assert_eq!(lexer.next_token().unwrap().token, Token::Assign);
+        assert_eq!(lexer.next_token().unwrap().token, Token::Number(23.0));
+        assert_eq!(lexer.next_token().unwrap().token, Token::Semicolon);
+        assert_eq!(lexer.next_token().unwrap().token, Token::EOF);
+    }
+
+    #[test]
+    fn test_unterminated_block_comment() {
+        let input = "var x = /* Ungeschlossener\nKommentar\n";
+        let mut lexer = Lexer::new(input);
+        
+        assert_eq!(lexer.next_token().unwrap().token, Token::Var);
+        assert_eq!(lexer.next_token().unwrap().token, Token::Identifier("x".to_string()));
+        assert_eq!(lexer.next_token().unwrap().token, Token::Assign);
+        
+        // Der nächste Token sollte einen UnterminatedBlockComment-Fehler erzeugen
+        match lexer.next_token() {
+            Err(LexerError::UnterminatedBlockComment(line, col)) => {
+                assert_eq!(line, 1);  // Kommentar beginnt in Zeile 1
+                assert_eq!(col, 8);   // Kommentar beginnt nach "var x = "
+            },
+            other => panic!("Expected UnterminatedBlockComment error, got {:?}", other)
+        }
+    }
+
+    #[test]
+    fn test_nested_comments() {
+        let input = "var x = /* Äußerer /* Innerer */ Kommentar */ 42;";
+        let mut lexer = Lexer::new(input);
+        
+        assert_eq!(lexer.next_token().unwrap().token, Token::Var);
+        assert_eq!(lexer.next_token().unwrap().token, Token::Identifier("x".to_string()));
+        assert_eq!(lexer.next_token().unwrap().token, Token::Assign);
+        assert_eq!(lexer.next_token().unwrap().token, Token::Number(42.0));
+        assert_eq!(lexer.next_token().unwrap().token, Token::Semicolon);
+        assert_eq!(lexer.next_token().unwrap().token, Token::EOF);
     }
 } 

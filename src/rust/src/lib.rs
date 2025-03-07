@@ -4,6 +4,10 @@ extern crate napi_derive;
 use napi::{Error, Result as NapiResult, Status};
 use serde::{Deserialize, Serialize};
 use sysinfo::{ProcessExt, System, SystemExt, PidExt, CpuExt};
+use napi::threadsafe_function::{ThreadsafeFunction, ErrorStrategy};
+use std::sync::Arc;
+use std::sync::Mutex;
+use once_cell::sync::OnceCell;
 
 // Language-Modul einbinden
 pub mod language;
@@ -169,6 +173,29 @@ pub fn get_system_info() -> String {
 #[napi]
 pub fn add_numbers(a: i32, b: i32) -> i32 {
     a + b
+}
+
+#[napi]
+pub fn execute_code(
+    code: String,
+    callback: ThreadsafeFunction<String, ErrorStrategy::Fatal>,
+) -> Result<String, napi::Error> {
+    // Erstelle einen Klon des Callbacks für die Verwendung im Interpreter
+    let tsfn = callback.clone();
+    
+    let mut parser = language::Parser::new(&code);
+    let statements = match parser.parse_program() {
+        Ok(stmts) => stmts,
+        Err(e) => return Err(napi::Error::from_reason(format!("Parse Error: {}", e)))
+    };
+
+    // Erstelle den Interpreter mit dem geklonten Callback
+    let mut interpreter = language::Interpreter::with_callback(tsfn);
+    
+    match interpreter.interpret(statements) {
+        Ok(_) => Ok("Code successfully executed.".to_string()),
+        Err(e) => Err(napi::Error::from_reason(format!("Runtime Error: {}", e)))
+    }
 }
 
 #[cfg(test)]

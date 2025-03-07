@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use super::ast::{Expression, Statement, BinaryOperator, UnaryOperator};
 use super::error::RuntimeError;
 use std::sync::Arc;
+use napi::threadsafe_function::{ThreadsafeFunction, ErrorStrategy};
 
 pub type NativeFn = fn(Vec<Value>) -> Result<Value, RuntimeError>;
 
@@ -11,13 +12,7 @@ pub enum Value {
     String(String),
     Boolean(bool),
     Null,
-    NativeFunction {
-        name: String,
-        arity: usize,
-        #[allow(dead_code)]
-        #[allow(clippy::type_complexity)]
-        func: Arc<dyn Fn(Vec<Value>) -> Result<Value, RuntimeError> + Send + Sync + 'static>,
-    },
+    NativeFunction(String),  // Nur der Name der Funktion
     Function {
         params: Vec<String>,
         body: Vec<Statement>,
@@ -40,7 +35,7 @@ impl std::fmt::Debug for Value {
             Value::String(s) => write!(f, "\"{}\"", s),
             Value::Boolean(b) => write!(f, "{}", b),
             Value::Null => write!(f, "null"),
-            Value::NativeFunction { name, .. } => write!(f, "<native fn {}>", name),
+            Value::NativeFunction(name) => write!(f, "<native fn {}>", name),
             Value::Function { .. } => write!(f, "<fn>"),
         }
     }
@@ -53,7 +48,7 @@ impl PartialEq for Value {
             (Value::String(a), Value::String(b)) => a == b,
             (Value::Boolean(a), Value::Boolean(b)) => a == b,
             (Value::Null, Value::Null) => true,
-            (Value::NativeFunction { name: a, .. }, Value::NativeFunction { name: b, .. }) => a == b,
+            (Value::NativeFunction(a), Value::NativeFunction(b)) => a == b,
             _ => false,
         }
     }
@@ -110,12 +105,26 @@ impl Environment {
 
 pub struct Interpreter {
     environment: Environment,
+    console_callback: Option<ThreadsafeFunction<String>>,
+    native_functions: HashMap<String, Arc<dyn Fn(&Interpreter, Vec<Value>) -> Result<Value, RuntimeError> + Send + Sync + 'static>>,
 }
 
 impl Interpreter {
     pub fn new() -> Self {
         let mut interpreter = Interpreter {
             environment: Environment::new(),
+            console_callback: None,
+            native_functions: HashMap::new(),
+        };
+        interpreter.define_native_functions();
+        interpreter
+    }
+
+    pub fn with_callback(callback: ThreadsafeFunction<String>) -> Self {
+        let mut interpreter = Interpreter {
+            environment: Environment::new(),
+            console_callback: Some(callback),
+            native_functions: HashMap::new(),
         };
         interpreter.define_native_functions();
         interpreter
@@ -282,26 +291,19 @@ impl Interpreter {
                 let callee_val = self.evaluate_expression(*callee)?;
                 let mut evaluated_args = Vec::new();
                 
-                // Evaluiere alle Argumente
                 for arg in arguments {
                     evaluated_args.push(self.evaluate_expression(arg)?);
                 }
                 
                 match callee_val {
-                    Value::NativeFunction { arity, func, .. } => {
-                        // Überprüfe die Argumentanzahl
-                        if evaluated_args.len() != arity {
-                            return Err(RuntimeError::InvalidArgumentCount {
-                                expected: arity,
-                                got: evaluated_args.len(),
-                            });
+                    Value::NativeFunction(name) => {
+                        if let Some(func) = self.native_functions.get(&name) {
+                            func(self, evaluated_args)
+                        } else {
+                            Err(RuntimeError::UndefinedVariable(name))
                         }
-                        
-                        // Rufe die native Funktion auf
-                        func(evaluated_args)
                     },
                     Value::Function { params, body } => {
-                        // Überprüfe die Argumentanzahl
                         if evaluated_args.len() != params.len() {
                             return Err(RuntimeError::InvalidArgumentCount {
                                 expected: params.len(),
@@ -309,19 +311,15 @@ impl Interpreter {
                             });
                         }
                         
-                        // Erstelle eine neue Umgebung für den Funktionsaufruf
                         let previous_env = self.environment.clone();
                         self.environment = Environment::with_enclosing(previous_env);
                         
-                        // Binde die Parameter an die Argumente
                         for (param, arg) in params.iter().zip(evaluated_args) {
                             self.environment.define(param.clone(), arg);
                         }
                         
-                        // Führe den Funktionskörper aus
                         let result = self.interpret(body)?;
                         
-                        // Stelle die vorherige Umgebung wieder her
                         if let Some(enclosing) = self.environment.enclosing.take() {
                             self.environment = *enclosing;
                         }
@@ -391,50 +389,53 @@ impl Interpreter {
     }
 
     fn define_native_functions(&mut self) {
-        // Round-Funktion definieren
-        self.environment.define(
-            "round".to_string(),
-            Value::NativeFunction {
-                name: "round".to_string(),
-                arity: 2,
-                func: Arc::new(|args| {
-                    if args.len() != 2 {
-                        return Err(RuntimeError::InvalidArgumentCount {
-                            expected: 2,
-                            got: args.len(),
-                        });
-                    }
+        // Definiere die out-Funktion
+        let out_func = Arc::new(|interpreter: &Interpreter, args: Vec<Value>| {
+            if args.is_empty() {
+                return Err(RuntimeError::InvalidArgumentCount {
+                    expected: 1,
+                    got: 0,
+                });
+            }
 
-                    // Extrahiere die Argumente
-                    let number = match &args[0] {
-                        Value::Number(n) => *n,
-                        _ => return Err(RuntimeError::TypeError(
-                            "First argument of round must be a number".to_string()
-                        )),
-                    };
+            let output = match &args[0] {
+                Value::Number(n) => n.to_string(),
+                Value::String(s) => s.clone(),
+                Value::Boolean(b) => b.to_string(),
+                Value::Null => "null".to_string(),
+                Value::NativeFunction(name) => format!("[Native Function: {}]", name),
+                Value::Function { .. } => "[Function]".to_string(),
+            };
 
-                    let decimals = match &args[1] {
-                        Value::Number(n) => {
-                            if n.fract() != 0.0 {
-                                return Err(RuntimeError::TypeError(
-                                    "Second argument of round must be an integer".to_string()
-                                ));
-                            }
-                            *n as i32
-                        },
-                        _ => return Err(RuntimeError::TypeError(
-                            "Second argument of round must be a number".to_string()
-                        )),
-                    };
+            if let Some(callback) = &interpreter.console_callback {
+                callback.call(Ok(output.clone()), napi::threadsafe_function::ThreadsafeFunctionCallMode::Blocking);
+            } else {
+                println!("{}", output);
+            }
 
-                    // Berechne den Rundungsfaktor
-                    let factor = 10.0f64.powi(decimals);
-                    let rounded = (number * factor).round() / factor;
-                    
-                    Ok(Value::Number(rounded))
-                }),
-            },
-        );
+            Ok(Value::Null)
+        });
+
+        self.native_functions.insert("out".to_string(), out_func);
+        self.environment.define("out".to_string(), Value::NativeFunction("out".to_string()));
+
+        // Definiere die round-Funktion
+        let round_func = Arc::new(|_: &Interpreter, args: Vec<Value>| {
+            if args.is_empty() {
+                return Err(RuntimeError::InvalidArgumentCount {
+                    expected: 1,
+                    got: 0,
+                });
+            }
+
+            match &args[0] {
+                Value::Number(n) => Ok(Value::Number(n.round())),
+                _ => Err(RuntimeError::TypeError("Expected number argument".to_string())),
+            }
+        });
+
+        self.native_functions.insert("round".to_string(), round_func);
+        self.environment.define("round".to_string(), Value::NativeFunction("round".to_string()));
     }
 }
 
@@ -671,6 +672,36 @@ mod tests {
         assert!(matches!(
             evaluate_str(input),
             Err(RuntimeError::InvalidArgumentCount { expected: 1, got: 2 })
+        ));
+    }
+
+    #[test]
+    fn test_out_function() {
+        let mut interpreter = Interpreter::new();
+        
+        // Test mit verschiedenen Werttypen
+        let test_cases = vec![
+            ("out(42);", Value::Number(42.0)),
+            ("out(\"Hello\");", Value::String("Hello".to_string())),
+            ("out(true);", Value::Boolean(true)),
+            ("var x = 123; out(x);", Value::Number(123.0)),
+        ];
+
+        for (input, expected_value) in test_cases {
+            let result = evaluate_str(input);
+            assert!(result.is_ok(), "Failed to evaluate: {}", input);
+        }
+    }
+
+    #[test]
+    fn test_out_function_errors() {
+        let mut interpreter = Interpreter::new();
+        
+        // Test ohne Argumente
+        let result = evaluate_str("out();");
+        assert!(matches!(
+            result,
+            Err(RuntimeError::InvalidArgumentCount { expected: 1, got: 0 })
         ));
     }
 } 
